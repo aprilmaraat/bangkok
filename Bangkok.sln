@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bangkok.Web", "Bangkok.Web\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bangkok.Models", "Bangkok.Models\Bangkok.Models.csproj", "{1293B92E-A103-4894-8FD6-A198C7BCE577}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bangkok.EF", "Bangkok.EF\Bangkok.EF.csproj", "{DFD9B851-6881-4FE8-AFBC-FA774E1CFEBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bangkok.EF.StartupEmulator", "Bangkok.EF.StartupEmulator\Bangkok.EF.StartupEmulator.csproj", "{872894B8-7EE9-41F7-9BA2-D3E635D20BA6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{1293B92E-A103-4894-8FD6-A198C7BCE577}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1293B92E-A103-4894-8FD6-A198C7BCE577}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1293B92E-A103-4894-8FD6-A198C7BCE577}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFD9B851-6881-4FE8-AFBC-FA774E1CFEBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFD9B851-6881-4FE8-AFBC-FA774E1CFEBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFD9B851-6881-4FE8-AFBC-FA774E1CFEBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFD9B851-6881-4FE8-AFBC-FA774E1CFEBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{872894B8-7EE9-41F7-9BA2-D3E635D20BA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{872894B8-7EE9-41F7-9BA2-D3E635D20BA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{872894B8-7EE9-41F7-9BA2-D3E635D20BA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{872894B8-7EE9-41F7-9BA2-D3E635D20BA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
