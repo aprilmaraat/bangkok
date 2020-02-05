@@ -5,17 +5,17 @@ import { WeatherForecast, Transaction } from '../../models/Transaction';
 import { map } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-fetch-data',
-  templateUrl: './fetch-data.component.html'
+  selector: 'app-transaction-data',
+  templateUrl: './transaction-data.component.html'
 })
-export class FetchDataComponent {
-  public object: Observable<any[]>;
+export class TransactionDataComponent {
+  public transaction: Observable<any[]>;
 
   constructor(http: HttpClient
     , @Inject('BASE_URL') baseUrl: String) {
     http.get<Observable<WeatherForecast[]>>(baseUrl + 'weatherforecast')
       .subscribe(result => {
-        this.object = result;
+        this.transaction = result;
       }, error => console.error(error));
   }
 }

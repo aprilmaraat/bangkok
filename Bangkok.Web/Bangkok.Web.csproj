@@ -70,6 +70,11 @@
     <None Remove="ClientApp\tslint.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Bangkok.EF\Bangkok.EF.csproj" />
+    <ProjectReference Include="..\Bangkok.Models\Bangkok.Models.csproj" />
+  </ItemGroup>
+
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">
