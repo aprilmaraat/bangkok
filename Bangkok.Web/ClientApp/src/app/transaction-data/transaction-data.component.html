@@ -1,26 +1,8 @@
-<h1 id="tableLabel">Weather forecast</h1>
+<h1 id="tableLabel">Transactions</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<p *ngIf="!transactions"><em>Loading...</em></p>
 
-<p *ngIf="!transaction"><em>Loading...</em></p>
-
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="transaction">
-  <!-- <thead>
-    <tr>
-      <th>Date</th>
-      <th>Temp. (C)</th>
-      <th>Temp. (F)</th>
-      <th>Summary</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let item of transaction">
-      <td>{{ item.date }}</td>
-      <td>{{ item.temperatureC }}</td>
-      <td>{{ item.temperatureF }}</td>
-      <td>{{ item.summary }}</td>
-    </tr>
-  </tbody> -->
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="transactions">
   <thead>
     <tr>
       <th>Transaction ID</th>
@@ -30,11 +12,11 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let item of transaction">
-      <td>{{ item.ID }}</td>
-      <td>{{ item.Amount }}</td>
-      <td>{{ item.CurrencyCode }}</td>
-      <td>{{ item.TransactionDT }}</td>
+    <tr *ngFor="let transaction of transactions">
+      <td>{{ transaction.id }}</td>
+      <td>{{ transaction.amount }}</td>
+      <td>{{ transaction.currencyCode }}</td>
+      <td>{{ transaction.transactionDT }}</td>
     </tr>
   </tbody>
 </table>

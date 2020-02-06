@@ -9,25 +9,26 @@ import { map } from 'rxjs/operators';
   templateUrl: './transaction-data.component.html'
 })
 export class TransactionDataComponent {
-  public transaction: Observable<any[]>;
-  public options: RequestOption;
+  public transactions: Observable<Transaction[]>;
   public forecasts: any[];
+  public baseUrl: String;
+  public options: RequestOption;
+  public http: HttpClient;
 
-  constructor(http: HttpClient
-    , @Inject('BASE_URL') baseUrl: String) {
-      // this.options.OptionType = 1;
-      // this.options.CurrencyCode = 'USD';
-      // this.options.Status = 1;
-      http.post<Observable<WeatherForecast[]>>(baseUrl + 'bangkok/transaction', this.options)
-        .subscribe(result => {
-          this.transaction = result;
-          console.log(result);
-        }, error => console.error(error));
-      // http.get<Observable<WeatherForecast[]>>(baseUrl + 'weatherforecast')
-      //   .subscribe(result => {
-      //     this.transaction = result;
-      //     console.log(result);
-      //   }, error => console.error(error));
+  constructor(_http: HttpClient
+    , @Inject('BASE_URL') _baseUrl: String) {
+      this.http = _http;
+      this.baseUrl = _baseUrl;
+
+      this.getAllTransactions();
+  }
+
+  public getAllTransactions(){
+    return this.http.post<Observable<Transaction[]>>(this.baseUrl + 'bangkok/transaction', this.options)
+    .subscribe(result => {
+      this.transactions = result;
+      console.log(this.transactions);
+    }, error => console.error(error));
   }
 }
 
