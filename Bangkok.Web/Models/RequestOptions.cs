@@ -11,6 +11,7 @@ namespace Bangkok.Web.Models
         ByCurrency = 1,
         ByDateRange = 2,
         ByStatus = 3,
+        All = 4
     }
     public class RequestOptions
     {

@@ -2,6 +2,8 @@
 
 <p *ngIf="!transactions"><em>Loading...</em></p>
 
+<app-upload (onUploadFinished)="uploadFinished($event)"></app-upload>
+
 <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="transactions">
   <thead>
     <tr>
