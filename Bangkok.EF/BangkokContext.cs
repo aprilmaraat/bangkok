@@ -5,9 +5,7 @@ namespace Bangkok.EF
 {
     public class BangkokContext : DbContext
     {
-        public BangkokContext(DbContextOptions<BangkokContext> options) : base(options)
-        {
-        }
+        public BangkokContext(DbContextOptions<BangkokContext> options) : base(options){ }
 
         public virtual DbSet<EnumStatus> EnumStatus { get; set; }
         public virtual DbSet<TransactionData> TransactionData { get; set; }

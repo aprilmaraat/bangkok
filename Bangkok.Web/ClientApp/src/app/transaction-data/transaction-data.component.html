@@ -5,7 +5,7 @@
 <p *ngIf="!transaction"><em>Loading...</em></p>
 
 <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="transaction">
-  <thead>
+  <!-- <thead>
     <tr>
       <th>Date</th>
       <th>Temp. (C)</th>
@@ -19,6 +19,22 @@
       <td>{{ item.temperatureC }}</td>
       <td>{{ item.temperatureF }}</td>
       <td>{{ item.summary }}</td>
+    </tr>
+  </tbody> -->
+  <thead>
+    <tr>
+      <th>Transaction ID</th>
+      <th>Amount</th>
+      <th>Currency</th>
+      <th>Transacation Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of transaction">
+      <td>{{ item.ID }}</td>
+      <td>{{ item.Amount }}</td>
+      <td>{{ item.CurrencyCode }}</td>
+      <td>{{ item.TransactionDT }}</td>
     </tr>
   </tbody>
 </table>

@@ -6,14 +6,15 @@ using Bangkok.EF;
 using Bangkok.Models;
 using Microsoft.EntityFrameworkCore;
 using Bangkok.Web.Models;
+using Bangkok.Web.Services.Interfaces;
 
 namespace Bangkok.Web.Services
 {
-    public class TransactionService
+    public class TransactionService : ITransactionService
     {
         private readonly BangkokContext _bangkokContext;
 
-        public TransactionService(BangkokContext bangkokContext) 
+        public TransactionService(BangkokContext bangkokContext)
         {
             _bangkokContext = bangkokContext;
         }

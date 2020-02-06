@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Bangkok.Models
 {
@@ -12,6 +13,7 @@ namespace Bangkok.Models
         /// <summary>
         /// Navigation property to EnumStatus
         /// </summary>
+        [JsonIgnore]
         public virtual EnumStatus EnumStatus { get; set; }
     }
 }

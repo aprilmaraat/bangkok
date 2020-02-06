@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Bangkok.Web.Models;
-using Bangkok.Web.Services;
+using Bangkok.Web.Services.Interfaces;
 
 namespace Bangkok.Web.Controllers
 {
     [ApiController]
     [Route("bangkok/transaction")]
-    public class TransactionController : Controller
+    public class TransactionController : ControllerBase
     {
-        private readonly TransactionService _transactionService;
+        private readonly ITransactionService _transactionService;
 
-        public TransactionController(TransactionService transactionService) 
+        public TransactionController(
+            ITransactionService transactionService)
         {
             _transactionService = transactionService;
         }
