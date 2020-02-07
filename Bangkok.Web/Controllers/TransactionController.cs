@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Bangkok.Web.Models;
 using Bangkok.Web.Services.Interfaces;
 using Microsoft.Extensions.Logging;
-using System;
 
 namespace Bangkok.Web.Controllers
 {
@@ -39,7 +38,7 @@ namespace Bangkok.Web.Controllers
         [HttpPost, DisableRequestSizeLimit]
         public async Task<IActionResult> Upload()
         {
-            var response = await _transactionService.SaveTransactionData(Request.Form.Files[0]);
+            var response = await _transactionService.SaveTransactionDataFromFile(Request.Form.Files[0]);
 
             switch (response.State)
             {
