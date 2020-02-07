@@ -2,9 +2,9 @@
 
 <app-upload (onUploadFinished)="uploadFinished($event)"></app-upload>
 
-<p *ngIf="!transactions"><em>Loading...</em></p>
+<p *ngIf="loading"><em>Loading...</em></p>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="transactions">
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="!loading">
   <thead>
     <tr>
       <th>Transaction ID</th>

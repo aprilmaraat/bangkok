@@ -17,13 +17,13 @@ using System.Globalization;
 using TinyCsvParser;
 using System.Text;
 using System.Net.Http.Headers;
+using TinyCsvParser.TypeConverter;
 
 namespace Bangkok.Web.Services
 {
     public class TransactionService : ITransactionService
     {
         private readonly BangkokContext _bangkokContext;
-        private readonly ILogger<TransactionService> _logger;
         private static readonly string[] _permittedExtensions = { ".xml", ".csv" };
 
         public TransactionService(BangkokContext bangkokContext)
@@ -107,41 +107,82 @@ namespace Bangkok.Web.Services
         private async Task<Response> SaveCsvData(string filePath)
         {
             List<TransactionData> transactionList = new List<TransactionData>();
-            using (var reader = new StreamReader(filePath))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            try
             {
-                var records = csv.GetRecords<TransactionCsv>();
-
-                foreach (var record in records)
+                bool fileDataIsValid = true;
+                using (var reader = new StreamReader(filePath))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
-                    if (NullOrWhiteSpace(record.ID)) 
+                    var records = csv.GetRecords<TransactionCsv>();
+                    int index = 0;
+                    foreach (var record in records)
                     {
-                        break;
+                        bool recordHasNull = false;
+                        if (NullOrWhiteSpace(record.ID) 
+                            || NullOrWhiteSpace(record.Amount) 
+                            || NullOrWhiteSpace(record.CurrencyCode) 
+                            || NullOrWhiteSpace(record.TransactionDT)
+                            || NullOrWhiteSpace(record.Status))
+                        {
+                            var description = $@"Data in index [{index}] with {{ID: {record.ID}, Amount: {record.Amount}
+, CurrencyCode: {record.CurrencyCode}, TransactionDT: {record.TransactionDT}
+, Status: {record.Status}}} has invalid data(s).";
+                            _bangkokContext.LogData.Add(new LogData { ErrorType = "Bad Data", Description = description});
+                            recordHasNull = true;
+                        }
+
+                        if (!recordHasNull)
+                        {
+                            var transaction = new TransactionData
+                            {
+                                ID = record.ID,
+                                Amount = Convert.ToDecimal(record.Amount.Replace(",", "").Trim()),
+                                CurrencyCode = record.CurrencyCode,
+                                TransactionDT = DateTime.ParseExact(record.TransactionDT, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+                                Status = ConvertStatusValue(record.Status),
+                            };
+
+                            transactionList.Add(transaction);
+                        }
+                            
+                        index++;
                     }
-                        
-
-                    var transaction = new TransactionData
-                    {
-                        ID = record.ID,
-                        Amount = record.Amount,
-                        CurrencyCode = record.CurrencyCode,
-                        TransactionDT = record.TransactionDT,
-                        Status = record.Status
-                    };
-
-                    transactionList.Add(transaction);
                 }
+                File.Delete(filePath);
+                if (fileDataIsValid)
+                {
+                    await _bangkokContext.AddRangeAsync(transactionList);
+                    await _bangkokContext.SaveChangesAsync();
+
+                    return new Response
+                    {
+                        State = ResponseState.Success,
+                        Message = ResponseMessage.Success,
+                        ErrorText = null,
+                        Exception = null
+                    };
+                }
+                else
+                    return new Response
+                    {
+                        State = ResponseState.Error,
+                        Message = ResponseMessage.MiscError,
+                        ErrorText = "File has invalid data in it.",
+                        Exception = null
+                    };
             }
-
-            File.Delete(fullPath);
-
-            return new Response
+            catch (Exception ex) 
             {
-                State = ResponseState.Error,
-                Message = ResponseMessage.MiscError,
-                ErrorText = "",
-                Exception = null
-            };
+                File.Delete(filePath);
+
+                return new Response
+                {
+                    State = ResponseState.Exception,
+                    Message = ResponseMessage.Exception,
+                    ErrorText = null,
+                    Exception = ex
+                };
+            }
         }
         /// <summary>
         /// Save data from XML file
@@ -168,6 +209,16 @@ namespace Bangkok.Web.Services
             if (string.IsNullOrEmpty(property) || string.IsNullOrWhiteSpace(property))
                 return true;
             return false;
+        }
+        private Status ConvertStatusValue(string status) 
+        {
+            var lowerStatus = status.ToLower();
+            if (lowerStatus == "approved")
+                return Status.A;
+            else if (lowerStatus == "finished" || lowerStatus == "done")
+                return Status.D;
+            else
+                return Status.R;
         }
         /// <summary>
         /// File landing point to process and check file validity

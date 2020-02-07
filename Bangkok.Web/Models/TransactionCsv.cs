@@ -14,9 +14,9 @@ namespace Bangkok.Web.Models
     public class TransactionCsv
     {
         public string ID { get; set; }
-        public decimal Amount { get; set; }
+        public string Amount { get; set; }
         public string CurrencyCode { get; set; }
-        public DateTime TransactionDT { get; set; }
-        public Status Status { get; set; }
+        public string TransactionDT { get; set; }
+        public string Status { get; set; }
     }
 }

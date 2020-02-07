@@ -20,7 +20,7 @@ namespace Bangkok.Web.Controllers
         }
         /// <summary>
         /// Generic endpoint to handle what OptionType the client requests
-        /// Can handle gettin transactions with conditions by currency, by date range, by status, or all transactions
+        /// Can handle getting transactions with conditions by currency, by date range, by status, or all transactions
         /// </summary>
         /// <param name="options">RequestOptions object. Contains option type and value based on option type</param>
         /// <returns></returns>

@@ -13,6 +13,7 @@ export class TransactionDataComponent {
   public baseUrl: string;
   public options: RequestOption;
   public http: HttpClient;
+  public loading = true;
 
   constructor(_http: HttpClient
     , @Inject('BASE_URL') _baseUrl: string) {
@@ -30,7 +31,7 @@ export class TransactionDataComponent {
     return this.http.post<Observable<Transaction[]>>(this.baseUrl, options)
     .subscribe(result => {
       this.transactions = result;
-      console.log(this.transactions);
+      this.loading = false;
     }, error => console.error(error));
   }
 
@@ -45,6 +46,11 @@ export class TransactionDataComponent {
       this.transactions = result;
       console.log(this.transactions);
     }, error => console.error(error));
+  }
+
+  public uploadFinished(event: any){
+    this.loading = true;
+    this.getAllTransactions();
   }
 }
 

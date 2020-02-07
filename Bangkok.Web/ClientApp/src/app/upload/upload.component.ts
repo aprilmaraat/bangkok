@@ -13,10 +13,13 @@ export class UploadComponent implements OnInit {
 
   @Output() public onUploadFinished = new EventEmitter();
 
+  public loading = true;
+
   constructor(_http: HttpClient
     , @Inject('BASE_URL') _baseUrl: String) {
         this.http = _http;
         this.baseUrl = _baseUrl + 'api/transaction';
+        this.loading = false;
     }
 
   ngOnInit() {
@@ -26,6 +29,8 @@ export class UploadComponent implements OnInit {
     if (files.length === 0) {
       return;
     }
+
+    this.loading = true;
 
     let fileToUpload = <File>files[0];
     const formData = new FormData();
@@ -39,6 +44,7 @@ export class UploadComponent implements OnInit {
           this.message = 'Upload success.';
           this.onUploadFinished.emit(event.body);
         }
+        this.loading = false;
       });
   }
 }
