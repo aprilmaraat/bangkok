@@ -4,14 +4,16 @@ using Bangkok.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bangkok.EF.Migrations
 {
     [DbContext(typeof(BangkokContext))]
-    partial class BangkokContextModelSnapshot : ModelSnapshot
+    [Migration("20200207051510_AddedLogDataTable")]
+    partial class AddedLogDataTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

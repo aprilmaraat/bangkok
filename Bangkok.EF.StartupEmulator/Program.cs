@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Bangkok.EF.StartupEmulator
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {

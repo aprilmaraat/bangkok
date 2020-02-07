@@ -5,12 +5,11 @@ namespace Bangkok.EF
 {
     public class BangkokContext : DbContext
     {
-        public BangkokContext(DbContextOptions<BangkokContext> options) : base(options)
-        {
-        }
+        public BangkokContext(DbContextOptions<BangkokContext> options) : base(options){ }
 
         public virtual DbSet<EnumStatus> EnumStatus { get; set; }
         public virtual DbSet<TransactionData> TransactionData { get; set; }
+        public virtual DbSet<LogData> LogData { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -48,6 +47,15 @@ namespace Bangkok.EF
                     .HasForeignKey<TransactionData>(e => e.Status)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Transaction.Data_enum.Status");
+            });
+            modelBuilder.Entity<LogData>(entity => 
+            {
+                entity.ToTable("Log.Data");
+                entity.Property(e => e.ID);
+                entity.Property(e => e.ErrorType)
+                    .HasColumnType("varchar(255)");
+                entity.Property(e => e.Description)
+                    .HasColumnType("varchar(max)");
             });
         }
     }

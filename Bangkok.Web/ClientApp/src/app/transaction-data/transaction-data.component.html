@@ -1,0 +1,24 @@
+<h1 id="tableLabel">Transactions</h1>
+
+<app-upload (onUploadFinished)="uploadFinished($event)"></app-upload>
+
+<p *ngIf="loading"><em>Loading...</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="!loading">
+  <thead>
+    <tr>
+      <th>Transaction ID</th>
+      <th>Amount</th>
+      <th>Currency</th>
+      <th>Transacation Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let transaction of transactions">
+      <td>{{ transaction.id }}</td>
+      <td>{{ transaction.amount }}</td>
+      <td>{{ transaction.currencyCode }}</td>
+      <td>{{ transaction.transactionDT }}</td>
+    </tr>
+  </tbody>
+</table>

@@ -39,12 +39,6 @@ namespace Bangkok.EF.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transaction.Data_Status",
-                table: "Transaction.Data",
-                column: "Status",
-                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
