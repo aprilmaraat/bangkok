@@ -16,6 +16,7 @@ using CsvHelper;
 using System.Globalization;
 using TinyCsvParser;
 using System.Text;
+using System.Net.Http.Headers;
 
 namespace Bangkok.Web.Services
 {
@@ -90,7 +91,61 @@ namespace Bangkok.Web.Services
             };
         }
 
-        private static async Task<Response<byte[]>> ProcessFormFile(IFormFile formFile)
+        private async Task<Response> SaveCsvData(string filePath)
+        {
+            List<TransactionData> transactionList = new List<TransactionData>();
+            using (var reader = new StreamReader(filePath))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                var records = csv.GetRecords<TransactionCsv>();
+
+                foreach (var record in records)
+                {
+                    if(NullOrWhiteSpace(record.ID))
+
+                    var transaction = new TransactionData
+                    {
+                        ID = record.ID,
+                        Amount = record.Amount,
+                        CurrencyCode = record.CurrencyCode,
+                        TransactionDT = record.TransactionDT,
+                        Status = record.Status
+                    };
+
+                    transactionList.Add(transaction);
+                }
+
+
+            }
+
+            return new Response
+            {
+                State = ResponseState.Error,
+                Message = ResponseMessage.MiscError,
+                ErrorText = "",
+                Exception = null
+            };
+        }
+
+        private async Task<Response> SaveXmlData(string filePath)
+        {
+            return new Response
+            {
+                State = ResponseState.Error,
+                Message = ResponseMessage.MiscError,
+                ErrorText = "",
+                Exception = null
+            };
+        }
+
+        private bool NullOrWhiteSpace(string property) 
+        {
+            if (string.IsNullOrEmpty(property) || string.IsNullOrWhiteSpace(property))
+                return true;
+            return false;
+        }
+
+        private async Task<Response> ProcessFormFile(IFormFile formFile)
         {
             // Don't trust the file name sent by the client. To display
             // the file name, HTML-encode the value.
@@ -103,7 +158,7 @@ namespace Bangkok.Web.Services
             {
                 var error = $"Unknown format: {formFile.Name} ({trustedFileNameForDisplay}) is empty.";
 
-                return new Response<byte[]>
+                return new Response
                 {
                     State = ResponseState.Error,
                     Message = ResponseMessage.MiscError,
@@ -114,7 +169,14 @@ namespace Bangkok.Web.Services
 
             try
             {
-                using (var memoryStream = new MemoryStream())
+                var folderName = "Temp";
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                var fileName = ContentDispositionHeaderValue.Parse(formFile.ContentDisposition).FileName.Trim('"');
+                var fullPath = Path.Combine(pathToSave, fileName);
+                var dbPath = Path.Combine(folderName, fileName);
+                string fileExtension = string.Empty;
+
+                using (var memoryStream = new FileStream(fullPath, FileMode.Create))
                 {
                     await formFile.CopyToAsync(memoryStream);
 
@@ -123,7 +185,7 @@ namespace Bangkok.Web.Services
                     // empty after removing the BOM.
                     if (memoryStream.Length == 0)
                     {
-                        return new Response<byte[]>
+                        return new Response
                         {
                             State = ResponseState.Error,
                             Message = ResponseMessage.MiscError,
@@ -135,44 +197,41 @@ namespace Bangkok.Web.Services
                     var isValid = IsValidFileExtension(
                         formFile.FileName, memoryStream);
 
-                    if (isValid.State == ResponseState.Success) 
+                    if (!(isValid.State == ResponseState.Success))
                     {
-                        DataTable csvData = new DataTable();
-
-                        CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
-                        var csvParser = new CsvParser<TransactionData>(csvParserOptions, new CsvMapper());
-                        var records = csvParser.ReadFromFile(formFile.FileName, Encoding.UTF8);
-                        var x = records.Select(x => x.Result).ToList();
-
-
-                        //using (CsvReader csv = new CsvReader(new StreamReader(memoryStream), CultureInfo.InvariantCulture))
-                        //{
-                        //    var records = csv.GetRecords<TransactionData>();
-                        //    var x = records.ToList();
-                        //}
-                        //return new Response<byte[]>
-                        //{
-                        //    State = ResponseState.Success,
-                        //    Message = ResponseMessage.Success,
-                        //    ErrorText = null,
-                        //    Exception = null,
-                        //    ResponseObject = memoryStream.ToArray()
-                        //};
+                        return new Response
+                        {
+                            State = isValid.State,
+                            Message = isValid.Message,
+                            ErrorText = $@"Unknown format: 
+                                {formFile.Name} ({trustedFileNameForDisplay}) file type isn't permitted.",
+                            Exception = null
+                        };
                     }
 
-                    return new Response<byte[]>
-                    {
-                        State = isValid.State,
-                        Message = isValid.Message,
-                        ErrorText = $@"Unknown format: 
-                            {formFile.Name} ({trustedFileNameForDisplay}) file type isn't permitted.",
-                        Exception = null
-                    };
+                    fileExtension = isValid.ResponseObject;
+                }
+
+                switch (fileExtension)
+                {
+                    case ".csv":
+                        return await SaveCsvData(fullPath);
+                    case ".xml":
+                        return await SaveXmlData();
+                    default:
+                        File.Delete(fullPath);
+                        return new Response
+                        {
+                            State = ResponseState.Error,
+                            Message = ResponseMessage.MiscError,
+                            ErrorText = $@"Unknown format: {formFile.Name} ({trustedFileNameForDisplay}) file type isn't permitted.",
+                            Exception = null
+                        };
                 }
             }
             catch (Exception ex)
             {
-                return new Response<byte[]>
+                return new Response
                 {
                     State = ResponseState.Exception,
                     Message = ResponseMessage.Exception,
@@ -182,11 +241,11 @@ namespace Bangkok.Web.Services
             }
         }
 
-        private static Response IsValidFileExtension(string fileName, Stream data)
+        private static Response<string> IsValidFileExtension(string fileName, Stream data)
         {
             if (string.IsNullOrEmpty(fileName) || data == null || data.Length == 0)
             {
-                return new Response
+                return new Response<string>
                 {
                     State = ResponseState.Error,
                     Message = ResponseMessage.MiscError,
@@ -199,7 +258,7 @@ namespace Bangkok.Web.Services
 
             if (string.IsNullOrEmpty(ext) || !_permittedExtensions.Contains(ext))
             {
-                return new Response
+                return new Response<string>
                 {
                     State = ResponseState.Error,
                     Message = ResponseMessage.MiscError,
@@ -208,12 +267,13 @@ namespace Bangkok.Web.Services
                 };
             }
 
-            return new Response
+            return new Response<string>
             {
                 State = ResponseState.Success,
                 Message = ResponseMessage.Success,
                 ErrorText = null,
-                Exception = null
+                Exception = null,
+                ResponseObject = ext
             };
         }
     }

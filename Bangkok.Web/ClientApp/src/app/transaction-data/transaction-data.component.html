@@ -1,8 +1,8 @@
 <h1 id="tableLabel">Transactions</h1>
 
-<p *ngIf="!transactions"><em>Loading...</em></p>
-
 <app-upload (onUploadFinished)="uploadFinished($event)"></app-upload>
+
+<p *ngIf="!transactions"><em>Loading...</em></p>
 
 <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="transactions">
   <thead>
