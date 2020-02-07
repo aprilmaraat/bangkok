@@ -129,6 +129,7 @@ namespace Bangkok.Web.Services
 , Status: {record.Status}}} has invalid data(s).";
                             _bangkokContext.LogData.Add(new LogData { ErrorType = "Bad Data", Description = description});
                             recordHasNull = true;
+                            fileDataIsValid = false;
                         }
 
                         if (!recordHasNull)
@@ -249,11 +250,10 @@ namespace Bangkok.Web.Services
 
             try
             {
-                var folderName = "Temp";
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                var pathToSave = Directory.GetCurrentDirectory();
                 var fileName = ContentDispositionHeaderValue.Parse(formFile.ContentDisposition).FileName.Trim('"');
                 var fullPath = Path.Combine(pathToSave, fileName);
-                var dbPath = Path.Combine(folderName, fileName);
+                var dbPath = fileName;
                 string fileExtension = string.Empty;
 
                 using (var memoryStream = new FileStream(fullPath, FileMode.Create))
