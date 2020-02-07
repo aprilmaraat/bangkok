@@ -6,6 +6,10 @@ using Bangkok.Models;
 
 namespace Bangkok.Web.Models
 {
+    /// <summary>
+    /// The option type the client requests
+    /// To get transactions based on the value of this condition
+    /// </summary>
     public enum OptionType : byte 
     {
         ByCurrency = 1,
@@ -13,6 +17,9 @@ namespace Bangkok.Web.Models
         ByStatus = 3,
         All = 4
     }
+    /// <summary>
+    /// Request body to be sent by client and used to construct condtion for retrieving transactions
+    /// </summary>
     public class RequestOptions
     {
         public OptionType OptionType { get; set; }

@@ -7,6 +7,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Bangkok.Web.Models
 {
+    /// <summary>
+    /// Helper model for Csv data conversion
+    /// Mapped to TransactionData object
+    /// </summary>
     public class TransactionCsv
     {
         public string ID { get; set; }

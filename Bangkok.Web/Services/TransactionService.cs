@@ -31,6 +31,11 @@ namespace Bangkok.Web.Services
             _bangkokContext = bangkokContext;
         }
 
+        /// <summary>
+        /// The generic service in getting all transactions based on condition
+        /// </summary>
+        /// <param name="options">RequestOptions object. Contains option type and value based on option type</param>
+        /// <returns></returns>
         public async Task<Response<IEnumerable<TransactionData>>> GetAllTransactions(RequestOptions options)
         {
             try
@@ -65,7 +70,11 @@ namespace Bangkok.Web.Services
                 return Response<IEnumerable<TransactionData>>.Error(ex);
             }
         }
-
+        /// <summary>
+        /// Service method landing point for upload file requests
+        /// </summary>
+        /// <param name="formFile">File uploaded by client</param>
+        /// <returns></returns>
         public async Task<Response> SaveTransactionDataFromFile(IFormFile formFile)
         {
             var streamedFileContent = await ProcessFormFile(formFile);
@@ -90,7 +99,11 @@ namespace Bangkok.Web.Services
                 Exception = streamedFileContent.Exception
             };
         }
-
+        /// <summary>
+        /// Save data from CSV file
+        /// </summary>
+        /// <param name="filePath">Path to CSV file</param>
+        /// <returns></returns>
         private async Task<Response> SaveCsvData(string filePath)
         {
             List<TransactionData> transactionList = new List<TransactionData>();
@@ -118,9 +131,9 @@ namespace Bangkok.Web.Services
 
                     transactionList.Add(transaction);
                 }
-
-
             }
+
+            File.Delete(fullPath);
 
             return new Response
             {
@@ -130,7 +143,11 @@ namespace Bangkok.Web.Services
                 Exception = null
             };
         }
-
+        /// <summary>
+        /// Save data from XML file
+        /// </summary>
+        /// <param name="filePath">Path to XML file</param>
+        /// <returns></returns>
         private async Task<Response> SaveXmlData(string filePath)
         {
             return new Response
@@ -141,14 +158,22 @@ namespace Bangkok.Web.Services
                 Exception = null
             };
         }
-
+        /// <summary>
+        /// Helper method to check if value is null, empty, or only contains white spaces
+        /// </summary>
+        /// <param name="property">Value to be checked</param>
+        /// <returns></returns>
         private bool NullOrWhiteSpace(string property) 
         {
             if (string.IsNullOrEmpty(property) || string.IsNullOrWhiteSpace(property))
                 return true;
             return false;
         }
-
+        /// <summary>
+        /// File landing point to process and check file validity
+        /// </summary>
+        /// <param name="formFile">File sent by client</param>
+        /// <returns></returns>
         private async Task<Response> ProcessFormFile(IFormFile formFile)
         {
             // Don't trust the file name sent by the client. To display
@@ -223,7 +248,6 @@ namespace Bangkok.Web.Services
                     case ".xml":
                         return await SaveXmlData(fullPath);
                     default:
-                        File.Delete(fullPath);
                         return new Response
                         {
                             State = ResponseState.Error,
@@ -244,7 +268,12 @@ namespace Bangkok.Web.Services
                 };
             }
         }
-
+        /// <summary>
+        /// Helper method to check if file has valid file extension
+        /// </summary>
+        /// <param name="fileName">Filename of file sent by client</param>
+        /// <param name="data">File data from file sent by client</param>
+        /// <returns></returns>
         private static Response<string> IsValidFileExtension(string fileName, Stream data)
         {
             if (string.IsNullOrEmpty(fileName) || data == null || data.Length == 0)
