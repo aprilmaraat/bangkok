@@ -101,7 +101,11 @@ namespace Bangkok.Web.Services
 
                 foreach (var record in records)
                 {
-                    if(NullOrWhiteSpace(record.ID))
+                    if (NullOrWhiteSpace(record.ID)) 
+                    {
+                        break;
+                    }
+                        
 
                     var transaction = new TransactionData
                     {
@@ -217,7 +221,7 @@ namespace Bangkok.Web.Services
                     case ".csv":
                         return await SaveCsvData(fullPath);
                     case ".xml":
-                        return await SaveXmlData();
+                        return await SaveXmlData(fullPath);
                     default:
                         File.Delete(fullPath);
                         return new Response
